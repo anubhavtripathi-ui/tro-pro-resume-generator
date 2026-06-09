@@ -1,5 +1,8 @@
 import streamlit as st
 
+from pdf_builder import create_resume_pdf
+
+
 st.set_page_config(
     page_title="TRO Pro Resume Generator",
     layout="wide"
@@ -7,17 +10,36 @@ st.set_page_config(
 
 st.title("TRO Pro Resume Generator")
 
-st.write(
-    "Resume PDF and Cover Letter PDF Generator"
+candidate_name = st.text_input(
+    "Candidate Name",
+    value="Anubhav Tripathi"
 )
 
-jd = st.text_area(
-    "Paste Job Description",
-    height=250
+target_role = st.text_input(
+    "Target Role"
 )
 
-if st.button("Analyze"):
-    if jd.strip():
-        st.success("JD received successfully.")
-    else:
-        st.warning("Please paste a Job Description.")
+summary = st.text_area(
+    "Professional Summary"
+)
+
+if st.button("Generate Resume PDF"):
+
+    create_resume_pdf(
+        "generated_resume.pdf",
+        candidate_name,
+        target_role,
+        summary,
+    )
+
+    with open(
+        "generated_resume.pdf",
+        "rb"
+    ) as file:
+
+        st.download_button(
+            label="Download Resume PDF",
+            data=file,
+            file_name="Resume.pdf",
+            mime="application/pdf",
+        )
